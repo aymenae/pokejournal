@@ -29,9 +29,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="Pokedex"
         options={{
-          title: 'About',
+          title: 'pokedex',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24} />
           ),

@@ -1,13 +1,17 @@
+import { Image } from 'react-native';
 import { Tabs } from 'expo-router';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+const pokedex = 'https://img.icons8.com/ios/50/pokedex.png';
+const pokedexFilled = 'https://img.icons8.com/?size=100&id=15566&format=png&color=000000';
 
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#ffd33d',
+        tabBarActiveTintColor: '#FF7F50',
         headerStyle: {
           backgroundColor: '#25292e',
         },
@@ -29,11 +33,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="Pokedex"
+        name="pokedex"
         options={{
           title: 'pokedex',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24} />
+          tabBarIcon: ({ color, focused }) => ( 
+            <Image source={{ uri: focused ?  pokedexFilled : pokedex }} style={{ width: 24, height: 24, tintColor: color }} />
           ),
         }}
       />

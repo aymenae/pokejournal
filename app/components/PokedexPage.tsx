@@ -14,7 +14,7 @@ export default function PokedexPage() {
     if (!data) return <Text>Loading...</Text>;
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text style={styles.text}>
                 {JSON.stringify(data, null, 2)}
             </Text>

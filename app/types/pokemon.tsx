@@ -3,11 +3,17 @@ export interface PokemonListResponse {
     next: string | null;
     previous: string | null;
     results: PokemonBasic[];
+    type: {
+        name: string;
+        url: string;
+    }
+
 }
 
 export interface PokemonBasic {
     name: string;
     url: string;
+    type: string;
 }
 
 export interface PokemonDetails {

@@ -1,28 +1,31 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import useSWR from 'swr';
 import { PokemonListResponse } from '../types/pokemon';
 import { getPokemonList } from '../services/pokemonService';
+import PokedexButton from '../components/PokedexButton';
 
 const getPokemonIdFromUrl = (url: string) => {
     const matches = url.match(/\/pokemon\/(\d+)/);
     return matches ? parseInt(matches[1]) : 1;
 };
 
+const url = 'https://pokeapi.co/api/v2/pokemon/';
+
+const fetcher = (...args: [string]) => fetch(...args).then((res) => res.json());
+
 export default function PokedexScreen() {
-    const { data, error } = useSWR<PokemonListResponse>(
-        'pokemon-list',
-        () => getPokemonList(9)
-    );
+    const { data: result, error } = useSWR(url, fetcher)
 
     if (error) return <Text>Failed to load</Text>;
-    if (!data) return <Text>Loading...</Text>;
+    if (!result) return <Text>Loading...</Text>;
 
     return (
-        <View style={styles.container}>
-            {data.results.map((pokemon) => {
+        <>
+        <ScrollView contentContainerStyle={styles.container}>
+            {result.results.map((pokemon) => {
                 const PokemonId = getPokemonIdFromUrl(pokemon.url);
-                const ImageUrl = `https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/${PokemonId}.svg`;
+                const ImageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${PokemonId}.png`;
 
                 return (
                     <View key={PokemonId} style={styles.pokemonCard}>
@@ -37,18 +40,25 @@ export default function PokedexScreen() {
                     </View>
                 );
             })}
-        </View>
+        </ScrollView>
+        <View>
+            <PokedexButton onPress={() => console.log('PokedexButton pressed')} />
+        </View> 
+        </>
+
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: '#25292e',
-        padding: 16,
+        paddingLeft: 16,
+        paddingTop: 16,
+        paddingRight: 16,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
     },
     pokemonCard: {
         width: '30%',

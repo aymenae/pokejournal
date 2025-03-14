@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
-import useSWR from 'swr';
-import { PokemonListResponse } from '../types/pokemon';
-import { getPokemonList } from '../services/pokemonService';
+import useSWRInfinite from 'swr/infinite';
+import { PokemonListResponse, PokemonDetail } from '../types/pokemon';
 import PokedexButton from '../components/PokedexButton';
 
 const getPokemonIdFromUrl = (url: string) => {
@@ -10,25 +9,44 @@ const getPokemonIdFromUrl = (url: string) => {
     return matches ? parseInt(matches[1]) : 1;
 };
 
-const url = 'https://pokeapi.co/api/v2/pokemon/';
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const fetcher = (...args: [string]) => fetch(...args).then((res) => res.json());
+const PAGE_SIZE = 6;
+
+const getKey = (pageIndex: number, previousPageData: PokemonListResponse) => {
+    if (previousPageData && !previousPageData.next) return null; // reached the end
+    return `https://pokeapi.co/api/v2/pokemon?limit=${PAGE_SIZE}&offset=${pageIndex * PAGE_SIZE}`;
+};
 
 export default function PokedexScreen() {
-    const { data: result, error } = useSWR(url, fetcher)
+    const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher);
+    const [detailedPokemon, setDetailedPokemon] = useState<PokemonDetail[]>([]);
+
+    useEffect(() => {
+        if (data && data[size - 1]) {
+            const fetchDetails = async () => {
+                const details = await Promise.all(
+                    data[size - 1].results.map((pokemon) =>
+                        fetch(pokemon.url).then((res) => res.json())
+                    )
+                );
+                setDetailedPokemon(details);
+            };
+            fetchDetails();
+        }
+    }, [data, size]);
 
     if (error) return <Text>Failed to load</Text>;
-    if (!result) return <Text>Loading...</Text>;
+    if (!data) return <Text>Loading...</Text>;
 
     return (
         <>
         <ScrollView contentContainerStyle={styles.container}>
-            {result.results.map((pokemon) => {
-                const PokemonId = getPokemonIdFromUrl(pokemon.url);
-                const ImageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${PokemonId}.png`;
+            {detailedPokemon.map((pokemon) => {
+                const ImageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
                 return (
-                    <View key={PokemonId} style={styles.pokemonCard}>
+                    <View key={pokemon.id} style={styles.pokemonCard}>
                         <Image
                             source={{ uri: ImageUrl }}
                             style={styles.pokemonImage}
@@ -37,15 +55,21 @@ export default function PokedexScreen() {
                         <Text style={styles.text}>
                             {pokemon.name}
                         </Text>
+                        <Text style={styles.text}>
+                            Type: {pokemon.types.map(typeInfo => typeInfo.type.name).join(', ')}
+                        </Text>
+                        <Text style={styles.text}>
+                            Abilities: {pokemon.abilities.map(abilityInfo => abilityInfo.ability.name).join(', ')}
+                        </Text>
                     </View>
                 );
             })}
         </ScrollView>
-        <View>
-            <PokedexButton onPress={() => console.log('PokedexButton pressed')} />
-        </View> 
+        <View style={styles.buttonContainer}>
+            <PokedexButton direction="left" onPress={() => setSize(size > 1 ? size - 1 : size)} disabled={size <= 1} />
+            <PokedexButton direction="right" onPress={() => setSize(size + 1)} />
+        </View>
         </>
-
     );
 }
 
@@ -72,11 +96,26 @@ const styles = StyleSheet.create({
         width: 120,
         height: 120,
     },
+    titletext: {
+        fontSize: 24,
+        fontFamily: 'monospace',
+        color: '#fff',
+        marginTop: 8,
+        textTransform: 'capitalize',
+        textAlign: 'center',
+    },
     text: {
         fontSize: 16,
         fontFamily: 'monospace',
         color: '#fff',
         marginTop: 8,
         textTransform: 'capitalize',
+        textAlign: 'center',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 16,
+        backgroundColor: '#25292e',
     },
 });

@@ -1,9 +1,9 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, } from 'react-native';
 
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Index screen</Text>
+      <Text style={styles.text}>Index screen! journal</Text>
     </View>
   );
 }

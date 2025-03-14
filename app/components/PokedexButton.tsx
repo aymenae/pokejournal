@@ -1,41 +1,45 @@
-import { Pressable, StyleSheet, Image, View } from 'react-native';
+import React from 'react';
+import { Pressable, StyleSheet, Image } from 'react-native';
 
 type Props = {
     onPress: () => void;
+    direction: 'left' | 'right';
+    disabled?: boolean;
 }
 
-export default function PokedexButton({ onPress }: Props) {
+export default function PokedexButton({ onPress, direction, disabled }: Props) {
     const ArrowR = 'https://img.icons8.com/?size=100&id=61&format=png&color=b4b9c0';
     const ArrowL = 'https://img.icons8.com/?size=100&id=1806&format=png&color=b4b9c0';
     
+    const isLeft = direction === 'left';
+    const arrowUri = isLeft ? ArrowL : ArrowR;
+    const buttonStyle = isLeft ? styles.buttonL : styles.buttonR;
+
     return (
-        <>
-            <View style={styles.buttonsContainer}>
-                <Pressable style={styles.button} onPress={onPress}>
-                    <Image source={{ uri: ArrowL }} style={styles.image} />
-                </Pressable>
-                <Pressable style={styles.button} onPress={onPress}>
-                    <Image source={{ uri: ArrowR }} style={styles.image} />
-                </Pressable>
-            </View>
-        </>
+        <Pressable style={buttonStyle} onPress={onPress} disabled={disabled}>
+            <Image source={{ uri: arrowUri }} style={styles.image} />
+        </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
+    buttonR: {
         backgroundColor: '#45494f',
         borderRadius: 20,
-        paddingTop: 10,
+        paddingTop: 20,
         paddingLeft: 20,
-        paddingRight: 20,
+        paddingRight: 15,
         paddingBottom: 20,
         margin: 15,
     },
-    buttonsContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#25292e',
-        justifyContent: 'center',
+    buttonL: {
+        backgroundColor: '#45494f',
+        borderRadius: 20,
+        paddingTop: 20,
+        paddingLeft: 15,
+        paddingRight: 20,
+        paddingBottom: 20,
+        margin: 15,
     },
     image: {
         width: 50,

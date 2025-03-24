@@ -28,16 +28,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Journal',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
+            <Ionicons name={focused ? 'book-sharp' : 'book-outline'} color={color} size={24} />
           ),
         }}
       />
       <Tabs.Screen
         name="pokedex"
         options={{
-          title: 'pokedex',
+          title: 'Pokédex',
           tabBarIcon: ({ color, focused }) => ( 
             <Image source={{ uri: focused ?  pokedexFilled : pokedex }} style={{ width: 24, height: 24, tintColor: color }} />
           ),

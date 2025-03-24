@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import useSWRInfinite from 'swr/infinite';
-import { PokemonListResponse, PokemonDetails } from '../types/pokemon';
+import { PokemonListResponse, PokemonDetails, PokemonBasic } from '../types/pokemon';
 import PokedexButton from '../components/PokedexButton';
 
 const getPokemonIdFromUrl = (url: string) => {
@@ -11,7 +11,7 @@ const getPokemonIdFromUrl = (url: string) => {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 9;
 
 const getKey = (pageIndex: number, previousPageData: PokemonListResponse) => {
     if (previousPageData && !previousPageData.next) return null; // reached the end
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        padding: 16,
+        padding: 5,
         backgroundColor: '#25292e',
     },
 });

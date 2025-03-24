@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import useSWRInfinite from 'swr/infinite';
-import { PokemonListResponse, PokemonDetail } from '../types/pokemon';
+import { PokemonListResponse, PokemonDetails } from '../types/pokemon';
 import PokedexButton from '../components/PokedexButton';
 
 const getPokemonIdFromUrl = (url: string) => {
@@ -20,13 +20,13 @@ const getKey = (pageIndex: number, previousPageData: PokemonListResponse) => {
 
 export default function PokedexScreen() {
     const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher);
-    const [detailedPokemon, setDetailedPokemon] = useState<PokemonDetail[]>([]);
+    const [detailedPokemon, setDetailedPokemon] = useState<PokemonDetails[]>([]);
 
     useEffect(() => {
         if (data && data[size - 1]) {
             const fetchDetails = async () => {
-                const details = await Promise.all(
-                    data[size - 1].results.map((pokemon) =>
+                const details: PokemonDetails[] = await Promise.all(
+                    data[size - 1].results.map((pokemon: PokemonBasic) =>
                         fetch(pokemon.url).then((res) => res.json())
                     )
                 );

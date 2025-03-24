@@ -27,4 +27,9 @@ export interface PokemonDetails {
             name: string;
         };
     }[];
+    abilities: {
+        ability: {
+            name: string;
+        };
+    }[];
 }

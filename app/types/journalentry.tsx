@@ -5,3 +5,5 @@ export interface JournalEntry {
   timestamp: string;
   pokemonName: string;
 }
+
+export default JournalEntry;

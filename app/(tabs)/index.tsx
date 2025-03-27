@@ -3,8 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert,
 import * as FileSystem from 'expo-file-system';
 import { nanoid } from 'nanoid/non-secure';
 import { BlurView } from 'expo-blur';
-import { JournalEntry } from '../types/JournalEntry'
-
+import { JournalEntry } from '../types/journalentry'
+  
 const JOURNAL_FILE = `${FileSystem.documentDirectory}journal_entries.json`;
 
 export default function JournalScreen() {

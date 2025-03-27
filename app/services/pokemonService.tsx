@@ -20,4 +20,11 @@ export const getPokemonDetails = async (nameOrId: string | number): Promise<Poke
     });
     if (!response.ok) {throw new Error('Failed to fetch');}
     return response.json();
-}
+};
+
+const pokemonService = {
+    getPokemonList,
+    getPokemonDetails
+};
+
+export default pokemonService;
